@@ -119,7 +119,7 @@ class Template
 
         if ($html != '')
         {
-            preg_match_all('/\[\['.idioma_var.'\.([a-zA-Z0-9\.\-_]+)\]\]/', $html, $var, PREG_PATTERN_ORDER);
+            preg_match_all('/\[\['.idioma_var.'([a-zA-Z0-9\.\-_]+)\]\]/', $html, $var, PREG_PATTERN_ORDER);
 
             for ($i = 0;$i < count($var[1]);$i++)
             {
@@ -129,7 +129,7 @@ class Template
             return $html;
         }
 
-        preg_match_all('/\[\['.idioma_var.'\.([a-zA-Z0-9\.\-_]+)\]\]/', $this->html, $var, PREG_PATTERN_ORDER);
+        preg_match_all('/\[\['.idioma_var.'([a-zA-Z0-9\.\-_]+)\]\]/', $this->html, $var, PREG_PATTERN_ORDER);
 
         for ($i = 0;$i < count($var[1]);$i++)
         {

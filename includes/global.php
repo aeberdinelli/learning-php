@@ -14,7 +14,7 @@ define('account_reciente', 'is_recent');
 define('root_url', 'http://localhost/lithium-core');
 
 define('idioma_default', 'es');
-define('idioma_var', 'lang');
+define('idioma_var', '_');
 
 // Base de datos
 $db = new mysqli('localhost','root','root','lithium');
