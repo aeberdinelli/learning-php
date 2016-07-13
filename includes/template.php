@@ -12,12 +12,20 @@ class Template
     private $reemplazos = array();
     private $scripts = '';
     private $base_url = '';
-    private $code = 'function __template() { ?>';
+
+    private $code = "
+        function __template()
+        {
+            // --- Start template ---
+            // replace_vars
+            ?>
+    ";
 
     public $cargar_variables = true;
     public $cargar_idioma = true;
     public $usar_includes = true;
     public $eval_code = true;
+    public $eval_vars = true;
 
     public function __construct($template, $folder = '')
     {
@@ -139,6 +147,25 @@ class Template
         return true;
     }
 
+    public static function redirigir($url)
+    {
+        if (substr($url, 0, 1) == "/")
+        {
+            $url = root_url.$url;
+        }
+
+        if (!headers_sent())
+        {
+            header("Location: {$url}");
+        }
+        else
+        {
+            echo '<script>window.location = "'.$url.'";</script>';
+        }
+
+        die;
+    }
+
     public function generar($return = false, $eval = true)
     {
         $this->reemplazos['template_base'] = $this->base;
@@ -161,6 +188,25 @@ class Template
             }
         }
 
+        if ($this->eval_code && $this->eval_vars)
+        {
+            $send = array();
+
+            preg_match_all('/\[\[\$([a-zA-Z0-9\[\]\-_>"\']+)\]\]/', $this->html, $resultados, PREG_PATTERN_ORDER);
+
+            foreach ($resultados[1] as $var)
+            {
+                $this->html = str_replace('[[$'.$var.']]', '<?php echo $'.$var.'; ?>', $this->html);
+                $send[] = '$'.$var;
+            }
+
+            if (count($send) > 0)
+            {
+                $global = 'global '.implode(',', $send).';';
+                $this->code = str_replace('// replace_vars', $global, $this->code);
+            }
+        }
+
         if ($this->cargar_idioma)
         {
             $this->cargar_idioma();
@@ -176,11 +222,20 @@ class Template
         $this->html = str_replace(array_keys($fix), array_values($fix), $this->html);
         $this->html .= $this->scripts;
 
-        $this->parse_pseudo();
+        if ($this->eval_code)
+        {
+            $this->parse_pseudo();
+        }
 
-        $this->code .= "<?php } ?>";
+        $this->code .= "
+        <?php
+        // --- End template ---
+        }
+        ?>";
 
         eval($this->code);
+
+        $this->code = '';
 
         if ($return)
         {
@@ -190,36 +245,20 @@ class Template
             }
             else
             {
-                echo $this->html;
+                return $this->html;
             }
         }
         else
         {
             if (function_exists('__template'))
             {
+                // Ejecutar template
                 __template();
             }
             else
             {
                 throw new Exception("No se pudo generar el template");
             }
-        }
-    }
-
-    public static function redirigir($url)
-    {
-        if (substr($url, 0, 1) == "/")
-        {
-            $url = root_url.$url;
-        }
-
-        if (!headers_sent())
-        {
-            header("Location: {$url}");
-        }
-        else
-        {
-            echo '<script>window.location = "'.$url.'";</script>';
         }
 
         die;

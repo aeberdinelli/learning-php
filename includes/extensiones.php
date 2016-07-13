@@ -27,13 +27,13 @@ class Extensiones
 
         while ($extension = $sql->fetch_object())
         {
-            $activadas[] = $extension->nombre;
-            $errores[$extension->nombre] = array();
+            $this->activadas[] = $extension->nombre;
+            $this->errores[$extension->nombre] = array();
 
             try
             {
-                include "extensiones/".$extension->carpeta."/".$extension->loader
-                $cargadas[] = $extension->nombre;
+                include "extensiones/".$extension->carpeta."/".$extension->loader;
+                $this->cargadas[] = $extension->nombre;
             }
             catch (Exception $e)
             {
@@ -161,14 +161,6 @@ class Extensiones
             d.innerHTML += "- Con errores: No disponible";
             document.body.appendChild(d);
         ');
-    }
-
-    public funtion __destruct()
-    {
-        if (debug)
-        {
-            $this->debug();
-        }
     }
 }
 ?>

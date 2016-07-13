@@ -4,6 +4,8 @@ if (!defined('included'))
     die;
 }
 
+define('core_version','1.1.3');
+
 // Config
 define('debug', true);
 define('secret_key', 'supercalifragilisticoespialidoso');

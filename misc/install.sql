@@ -25,7 +25,18 @@ create table `mailing`(
     codename varchar(60) not null,
     id int auto_increment,
     primary key(id)
-)
+);
+
+create table `pages`(
+    titulo varchar(255) not null,
+    body longtext not null,
+    tipo enum('php','html') not null default 'html',
+    updated datetime not null,
+    created datetime not null,
+    url varchar(400) not null,
+    id int auto_increment,
+    primary key(id)
+);
 
 create table `errores`(
     archivo varchar(400) not null,
@@ -35,4 +46,4 @@ create table `errores`(
     fecha datetime not null,
     id int auto_increment,
     primary key(id)
-)
+);
