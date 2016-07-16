@@ -4,7 +4,7 @@ if (!defined('included'))
     die;
 }
 
-class Extensiones
+class Plugins
 {
     private $activadas = array();
     private $cargadas = array();
@@ -46,6 +46,24 @@ class Extensiones
     {
         global $db;
 
+        $condicion = '';
+        if (is_array($evento))
+        {
+            foreach ($evento as $ev)
+            {
+                if ($condicion != '')
+                {
+                    $condicion .= ' OR ';
+                }
+
+                $condicion .= ' f.evento = "'.$ev.'" ';
+            }
+        }
+        else
+        {
+            $condicion .= ' f.evento = "'.$evento.'" ';
+        }
+
         $sql = $db->query("
             SELECT
                 f.function AS function,
@@ -54,7 +72,9 @@ class Extensiones
             LEFT JOIN `extensiones` AS x ON(
                 x.id = f.extension_id
                 AND x.estado = 'habilitada'
-                AND f.evento = '{$evento}'
+                AND (
+                    {$condicion}
+                )
             )
             WHERE
                 f.estado = 'habilitada'

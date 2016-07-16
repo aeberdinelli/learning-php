@@ -172,7 +172,7 @@ class Template
 
         if ($this->usar_includes)
         {
-            preg_match_all("/<!-- \[include ([a-zA-Z0-9\.\-_]+)\] -->/", $this->html, $resultados, PREG_PATTERN_ORDER);
+            preg_match_all("/<!-- \[include ([a-zA-Z0-9\/\.\-_]+)\] -->/", $this->html, $resultados, PREG_PATTERN_ORDER);
 
             foreach ($resultados[1] as $archivo)
             {
