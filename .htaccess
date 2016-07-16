@@ -1,0 +1,4 @@
+RewriteEngine On
+
+RewriteRule ^admin\/(.*)\/?$ admin/index.php?route=$1 [QSA]
+RewriteRule ^([^admin]+)$ index.php?route=$1 [QSA]
