@@ -8,13 +8,17 @@ class Pagina
 {
     public function cargar($page = '')
     {
-        global $db, $template;
+        global $db, $template, $plugins;
+
+        $plugins->ejecutar("empieza_carga_pagina");
 
         $url = ($page == '') ? $_GET['route'] : $page;
         $query = '';
 
         if ($url == '' || $url == '/' || $url == 'index.php')
         {
+            $plugins->ejecutar("pagina_muestra_index");
+
             $template->preparar("index");
             $template->generar();
         }
@@ -45,6 +49,8 @@ class Pagina
         {
             $body = $pagina->body;
 
+            $plugins->ejecutar("pagina_obtenida");
+
             if ($pagina->tipo == 'php')
             {
                 eval($body);
@@ -58,15 +64,21 @@ class Pagina
                     'titulo'    => $pagina->titulo
                 ));
 
+                $plugins->ejecutar("empiza_pagina");
                 $template->generar();
+
+                $plugins->ejecutar("termina_pagina");
             }
         }
         else
         {
+            $plugins->ejecutar("pagina_error_404");
+
             $template->preparar("404");
             $template->actualizar(array(
                 'url'   => $_GET['route']
             ));
+            
             $template->generar();
         }
     }

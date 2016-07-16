@@ -6,10 +6,10 @@ include "includes/utils.php";
 
 include "includes/idioma.php";
 include "includes/template.php";
-include "includes/extensiones.php";
+include "includes/plugins.php";
 include "includes/pagina.php";
 
-$extensiones = new Extensiones();
+$plugins = new Plugins();
 $idioma = new Idioma();
 $template = new Template('default');
 $pagina = new Pagina();

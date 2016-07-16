@@ -20,7 +20,9 @@ class Mailing
 
     public function __construct($email, $type = 'html', $lang = 'es')
     {
-        global $idioma;
+        global $idioma, $plugins;
+
+        $plugins->ejecutar("empieza_constructor_mailing");
 
         $this->to = $email;
 
@@ -39,16 +41,26 @@ class Mailing
         $this->add_header("Reply-To", $this->settings['reply-to']);
         $this->add_header("Mime-Version", "1.0");
         $this->add_header("Content-Type", $content_type);
+
+        $plugins->ejecutar("termina_constructor_mailing");
     }
 
     public function add_header($header, $val)
     {
+        global $plugins;
+
+        $plugins->ejecutar("empieza_agregar_header_mail");
+
         $this->headers .= "{$header}: {$val}\n";
+
+        $plugins->ejecutar("termina_agregar_header_mail");
     }
 
     public function preparar($var, $replace = array())
     {
-        global $db;
+        global $db, $plugins;
+
+        $plugins->ejecutar("empieza_preparacion_mail");
 
         if (preg_match('/[0-9]+/', $var))
         {
@@ -65,11 +77,15 @@ class Mailing
 
             if ($s = $sql->fetch_object())
             {
+                $plugins->ejecutar("mail_obtenido");
+
                 $this->subject  = $s->subject;
                 $this->body     = $s->body;
             }
             else
             {
+                $plugins->ejecutar("mail_no_encontrado");
+
                 throw new Exception("Email template not found");
             }
         }
@@ -92,8 +108,16 @@ class Mailing
 
             if ($s = $sql->fetch_object())
             {
+                $plugins->ejecutar("mail_obtenido");
+
                 $this->subject  = $s->subject;
                 $this->body     = $s->body;
+            }
+            else
+            {
+                $plugins->ejecutar("mail_no_encontrado");
+
+                throw new Exception("Email template not found");
             }
         }
 
@@ -101,14 +125,20 @@ class Mailing
         {
             foreach ($replace as $buscar => $reemplazar)
             {
+                $plugins->ejecutar("empieza_reemplazo_mail_assoc");
                 $this->body = str_replace('[['.$buscar.']]', $reemplazar, $this->body);
+
+                $plugins->ejecutar("termina_reemplazo_mail_assoc");
             }
         }
         else
         {
             for ($i = 0;$i < count($replace);$i++)
             {
+                $plugins->ejecutar("empieza_reemplazo_mail");
                 $this->body = str_replace("%".($i + 1), $replace[$i], $this->body);
+
+                $plugins->ejecutar("termina_reemplazo_mail");
             }
 
             // Borrar escapes \1, \2, etc
@@ -116,20 +146,19 @@ class Mailing
 
             $this->is_prepared = true;
         }
+
+        $plugins->ejecutar("termina_preparacion_mail");
     }
 
     public function enviar()
     {
-        if (!$this->is_prepared)
-        {
-            throw new Exception("No se pudo enviar el email");
-            return false;
-        }
-        else
-        {
-            mail($this->to, $this->subject, $this->body, $this->headers);
-            return true;
-        }
+        global $plugins;
+
+        $plugins->ejecutar("empiza_envio_mail");
+        mail($this->to, $this->subject, $this->body, $this->headers);
+
+        $plugins->ejecutar("termina_envio_mail");
+        return true;
     }
 }
 ?>
