@@ -18,7 +18,6 @@ class Pagina
         if ($url == '' || $url == '/' || $url == 'index.php')
         {
             $plugins->ejecutar("pagina_muestra_index");
-
             $template->preparar("index");
             $template->generar();
         }
@@ -78,7 +77,7 @@ class Pagina
             $template->actualizar(array(
                 'url'   => $_GET['route']
             ));
-            
+
             $template->generar();
         }
     }
