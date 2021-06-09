@@ -1,0 +1,12 @@
+{
+	"name": "aeberdinelli/learning-php",
+	"description": "Contains a template, plugins and language systems built from scratch. Is old code, don't use it in production environments.",
+	"type": "library",
+	"authors": [
+		{
+			"name": "Alan Berdinelli",
+			"email": "aeberdinelli@gmail.com"
+		}
+	],
+	"keywords": ["framework"]
+}
