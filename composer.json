@@ -1,5 +1,6 @@
 {
 	"name": "aeberdinelli/learning-php",
+	"version": "1.0.0",
 	"description": "Contains a template, plugins and language systems built from scratch. Is old code, don't use it in production environments.",
 	"type": "library",
 	"authors": [
